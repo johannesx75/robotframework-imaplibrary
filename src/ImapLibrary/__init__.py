@@ -3,6 +3,7 @@ import os
 import imaplib
 import time
 import urllib2
+from email.parser import HeaderParser
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 execfile(os.path.join(THIS_DIR, 'version.py'))
@@ -100,6 +101,17 @@ class ImapLibrary(object):
         """
         body = self.imap.fetch(mailNumber, '(BODY[TEXT])')[1][0][1].decode('quoted-printable')
         return body
+
+    def get_email_subject(self, mailNumber):
+        """
+        Returns an email subject
+
+        `mailNumber` is the index number of the mail to open
+        """
+        header_data = self.imap.fetch(mailNumber,'(BODY[HEADER.FIELDS (SUBJECT)])')[1][0][1]
+        parser = HeaderParser()
+        data = parser.parsestr(header_data)
+        return data['Subject']
 
     def _criteria(self, fromEmail, toEmail, status):
         crit = []
