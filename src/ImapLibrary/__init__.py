@@ -16,14 +16,15 @@ class ImapLibrary(object):
     ROBOT_LIBRARY_VERSION = VERSION
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
 
-    port = 993
-
-    def open_mailbox(self, server, user, password):
+    def open_mailbox(self, server, user, password, ssl=True):
         """
         Open the mailbox on a mail server with a valid
         authentication.
         """
-        self.imap = imaplib.IMAP4_SSL(server, self.port)
+        if ssl == True:
+            self.imap = imaplib.IMAP4_SSL(server, 993)
+        else:
+            self.imap = imaplib.IMAP4(server, 143)            
         self.imap.login(user, password)
         self.imap.select()
 
